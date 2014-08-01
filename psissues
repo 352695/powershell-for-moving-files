@@ -1,0 +1,36 @@
+#author: Gergana Abernathy
+
+$patronName = read-host 'Patron Name'
+#for folder name
+
+$sourceDirectory = 'P:\dpc\Zeutschel\'
+#where we get the stuff from
+
+$destinationDirectory = 'C:\Users\gergana\Desktop\Projects\'
+#where the folder and files will go
+
+$patronDirectory = $destinationDirectory + $patronName + '\'
+#inside the folder we just created
+
+$collectionNumber = read-host 'Collection Number'
+#collection number to search
+
+$collectiondir = get-childitem $sourceDirectory | where {$_.name -like $collectionNumber+'*'}
+#going to the directory of the collection to avoid excessive recursing
+
+new-item -Path $patronDirectory -itemType Directory
+
+set-location $collectiondir
+
+$fileList = get-childitem . *.pdf -recurse | where {($_.name -like $collectionNumber+'*')} 
+
+#-or ($_.name -like '00002*')}
+#delete comment tag and } to search more than one collection
+#to find a single file....
+#$file = get-childitem . '00001_0001.pdf' -recurse
+
+foreach ($item in $fileList) {
+    
+    $path = $patronDirectory + ($item.name.tostring())
+    $item.copyto($path)
+    }
